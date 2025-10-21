@@ -1,0 +1,3227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>老奶奶面馆库存管理系统beta4.0</title>
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-bg: #f5f7fa;
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Microsoft YaHei", sans-serif;
+      }
+
+      body {
+        background-color: var(--light-bg);
+        color: #333;
+        line-height: 1.6;
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+      }
+
+      header {
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        color: white;
+        padding: 15px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        font-size: 0.8rem;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .sidebar {
+        flex: 1;
+        min-width: 200px;
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .content-area {
+        flex: 4;
+        min-width: 300px;
+      }
+
+      .section {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 15px;
+      }
+
+      h2 {
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #eee;
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+      }
+
+      .nav-item {
+        display: block;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border-radius: 6px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+        cursor: pointer;
+      }
+
+      .nav-item:hover {
+        background-color: #f0f0f0;
+      }
+
+      .nav-item.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .module {
+        display: none;
+      }
+
+      .module.active {
+        display: block;
+      }
+
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 12px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+      }
+
+      th {
+        background: var(--secondary-color);
+        color: white;
+        padding: 10px 12px;
+        text-align: left;
+        font-size: 0.85rem;
+      }
+
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e1e1e1;
+        font-size: 0.85rem;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      .stock-warning {
+        color: var(--danger-color);
+        font-weight: bold;
+      }
+
+      .stock-ok {
+        color: var(--success-color);
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+        font-size: 0.85rem;
+      }
+
+      select,
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        transition: var(--transition);
+      }
+
+      select:focus,
+      input:focus,
+      textarea:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      }
+
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #27ae60;
+      }
+
+      .btn-danger {
+        background-color: var(--danger-color);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+
+      .btn-warning {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background-color: #e67e22;
+      }
+
+      .btn-info {
+        background-color: #17a2b8;
+        color: white;
+      }
+
+      .btn-info:hover {
+        background-color: #138496;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .flex-group {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+        margin-bottom: 12px;
+      }
+
+      .flex-group .form-group {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .dept-stats {
+        display: flex;
+        gap: 15px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      .dept-stat-card {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+        flex: 1;
+        min-width: 150px;
+      }
+
+      .dept-stat-card h3 {
+        margin-bottom: 6px;
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+      }
+
+      .dept-stat-value {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 5px;
+      }
+
+      .action-buttons .btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+
+      .price-input,
+      .warning-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.85rem;
+      }
+
+      .total-amount {
+        font-weight: bold;
+        color: var(--danger-color);
+      }
+
+      footer {
+        text-align: center;
+        padding: 15px;
+        background: var(--secondary-color);
+        color: white;
+        margin-top: 15px;
+        font-size: 0.8rem;
+      }
+
+      .search-summary {
+        background: #e8f4fc;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        font-weight: bold;
+        border-left: 4px solid var(--primary-color);
+        font-size: 0.85rem;
+      }
+
+      .export-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .dashboard-card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+      }
+
+      .dashboard-card h3 {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        color: var(--secondary-color);
+      }
+
+      .dashboard-card .value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .dashboard-card.warning .value {
+        color: var(--warning-color);
+      }
+
+      .dashboard-card.danger .value {
+        color: var(--danger-color);
+      }
+
+      .dashboard-card.success .value {
+        color: var(--success-color);
+      }
+
+      .alert-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        margin-left: 5px;
+      }
+
+      .alert-high {
+        background-color: var(--danger-color);
+        color: white;
+      }
+
+      .alert-medium {
+        background-color: var(--warning-color);
+        color: white;
+      }
+
+      .alert-low {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .operation-in {
+        color: var(--success-color);
+      }
+
+      .operation-out {
+        color: var(--danger-color);
+      }
+
+      /* 搜索下拉框样式 */
+      .search-select-container {
+        position: relative;
+      }
+
+      .search-select-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+
+      .search-select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+      }
+
+      .search-select-option {
+        padding: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+      }
+
+      .search-select-option:hover {
+        background-color: #f5f5f5;
+      }
+
+      .search-select-option:last-child {
+        border-bottom: none;
+      }
+
+      /* 拖拽排序样式 */
+      .sortable-item {
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .sortable-item.dragging {
+        opacity: 0.7;
+        background-color: #f8f9fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .sortable-item.over {
+        border-top: 2px solid var(--primary-color);
+      }
+
+      .drag-handle {
+        cursor: move;
+        color: #666;
+        margin-right: 8px;
+        font-size: 1rem;
+        user-select: none;
+      }
+
+      /* 默认部门设置样式 */
+      .default-dept-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .default-dept-badge {
+        background-color: var(--success-color);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: bold;
+      }
+
+      /* 长按提示样式 */
+      .long-press-hint {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        z-index: 1000;
+        animation: fadeInOut 3s ease-in-out;
+        display: none;
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        80% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      /* 移动端优化 */
+      @media (max-width: 768px) {
+        body {
+          padding: 5px;
+          font-size: 13px;
+        }
+
+        .container {
+          border-radius: 5px;
+        }
+
+        header {
+          padding: 12px;
+        }
+
+        h1 {
+          font-size: 1.2rem;
+        }
+
+        .subtitle {
+          font-size: 0.7rem;
+        }
+
+        .main-content {
+          flex-direction: column;
+          padding: 10px;
+          gap: 10px;
+        }
+
+        .sidebar {
+          width: 100%;
+          padding: 10px;
+        }
+
+        .content-area {
+          width: 100%;
+        }
+
+        .section {
+          padding: 10px;
+        }
+
+        h2 {
+          font-size: 1rem;
+        }
+
+        .flex-group {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .flex-group .form-group {
+          width: 100%;
+        }
+
+        .dept-stats {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .export-buttons {
+          flex-direction: column;
+        }
+
+        .dashboard-cards {
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+
+        .dashboard-card {
+          padding: 10px;
+        }
+
+        .dashboard-card .value {
+          font-size: 1.2rem;
+        }
+
+        .nav-item {
+          padding: 10px 12px;
+          font-size: 0.85rem;
+        }
+
+        th,
+        td {
+          padding: 6px 8px;
+          font-size: 0.75rem;
+        }
+
+        .btn {
+          padding: 8px 12px;
+          font-size: 0.8rem;
+          width: 100%;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .action-buttons .btn {
+          width: 100%;
+          margin-bottom: 5px;
+        }
+
+        select,
+        input,
+        textarea {
+          padding: 8px;
+          font-size: 0.85rem;
+        }
+
+        .form-group {
+          margin-bottom: 8px;
+        }
+
+        .table-container {
+          margin-top: 8px;
+        }
+
+        .search-select-dropdown {
+          max-height: 150px;
+        }
+
+        .default-dept-container {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        /* 移动端长按提示 */
+        .long-press-hint {
+          display: block;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .dashboard-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .dept-stat-card {
+          min-width: 100%;
+        }
+
+        .btn {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>老奶奶面馆库存管理系统beta4.0</h1>
+        <p class="subtitle">自由管理进货、消耗与库存</p>
+      </header>
+
+      <div class="main-content">
+        <div class="sidebar">
+          <h2>功能模块</h2>
+          <div class="nav-item active" data-module="dashboard">仪表盘</div>
+          <div class="nav-item" data-module="inventory">库存管理</div>
+          <div class="nav-item" data-module="operations">库存操作</div>
+          <div class="nav-item" data-module="categories">品类管理</div>
+          <div class="nav-item" data-module="departments">部门管理</div>
+          <div class="nav-item" data-module="reports">报表分析</div>
+          <div class="nav-item" data-module="daily-history">每日历史</div>
+          <div class="nav-item" data-module="export">数据导出</div>
+        </div>
+
+        <div class="content-area">
+          <!-- 仪表盘模块 -->
+          <div class="module active" id="dashboard-module">
+            <div class="section">
+              <h2>库存总览</h2>
+              <div class="dashboard-cards">
+                <div class="dashboard-card">
+                  <h3>总库存品类</h3>
+                  <div class="value" id="total-categories">0</div>
+                </div>
+                <div class="dashboard-card">
+                  <h3>总库存金额</h3>
+                  <div class="value" id="total-amount">¥0</div>
+                </div>
+                <div class="dashboard-card warning">
+                  <h3>库存预警</h3>
+                  <div class="value" id="low-stock-count">0</div>
+                </div>
+                <div class="dashboard-card">
+                  <h3>本月进货量</h3>
+                  <div class="value" id="monthly-purchase">0</div>
+                </div>
+              </div>
+
+              <h2>部门库存统计</h2>
+              <div class="dept-stats" id="dashboard-dept-stats">
+                <!-- 部门统计数据将通过JavaScript动态生成 -->
+              </div>
+
+              <h2>库存预警列表</h2>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>品类</th>
+                      <th>部门</th>
+                      <th>当前库存</th>
+                      <th>预警值</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody id="alert-body">
+                    <!-- 预警数据将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 库存管理模块 -->
+          <div class="module" id="inventory-module">
+            <div class="section">
+              <h2>当前库存</h2>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="inventory-dept">选择部门</label>
+                  <select id="inventory-dept">
+                    <!-- 部门选项将通过JavaScript动态生成 -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="inventory-search">搜索品类</label>
+                  <input
+                    type="text"
+                    id="inventory-search"
+                    placeholder="输入品类名称..."
+                  />
+                </div>
+                <button class="btn btn-info" id="search-inventory">搜索</button>
+                <button class="btn btn-warning" id="reset-inventory-search">
+                  重置
+                </button>
+                <button class="btn btn-primary" id="save-inventory-order">
+                  保存排序
+                </button>
+              </div>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 40px">排序</th>
+                      <th>品类</th>
+                      <th>单位</th>
+                      <th>进货量</th>
+                      <th>消耗量</th>
+                      <th>库存量</th>
+                      <th>单价(元)</th>
+                      <th>库存金额(元)</th>
+                      <th>预警值</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventory-body" class="sortable-container">
+                    <!-- 库存数据将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 库存操作模块 -->
+          <div class="module" id="operations-module">
+            <div class="section">
+              <h2>库存操作</h2>
+              <div class="form-group">
+                <label for="category-search">选择品类</label>
+                <div class="search-select-container">
+                  <input
+                    type="text"
+                    id="category-search"
+                    class="search-select-input"
+                    placeholder="输入品类名称搜索..."
+                  />
+                  <div class="search-select-dropdown" id="category-dropdown">
+                    <!-- 品类选项将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+                <input type="hidden" id="category" value="" />
+              </div>
+
+              <div class="form-group">
+                <label for="quantity">数量</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  min="1"
+                  placeholder="请输入数量"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="operation-type">操作类型</label>
+                <select id="operation-type">
+                  <option value="in">进货入库</option>
+                  <option value="out">消耗出库</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="department-group">
+                <label for="department">部门</label>
+                <div class="default-dept-container">
+                  <select id="department">
+                    <!-- 部门选项将通过JavaScript动态生成 -->
+                  </select>
+                  <button class="btn btn-info" id="set-default-dept">
+                    设为默认
+                  </button>
+                </div>
+                <div
+                  id="default-dept-info"
+                  style="margin-top: 5px; font-size: 0.8rem; color: #666"
+                ></div>
+              </div>
+
+              <div class="form-group">
+                <label for="date">日期</label>
+                <input type="date" id="date" max="" />
+              </div>
+
+              <div class="form-group">
+                <label for="notes">备注</label>
+                <textarea
+                  id="notes"
+                  placeholder="可填写备注信息（选填）"
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <div class="button-group">
+                <button class="btn btn-primary" id="save-btn">保存操作</button>
+                <button class="btn btn-warning" id="undo-btn">
+                  撤销上一次操作
+                </button>
+              </div>
+            </div>
+
+            <div class="section">
+              <h2>操作记录</h2>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="history-search">搜索品类</label>
+                  <input
+                    type="text"
+                    id="history-search"
+                    placeholder="输入品类名称..."
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="history-operation-type">操作类型</label>
+                  <select id="history-operation-type">
+                    <option value="all">全部类型</option>
+                    <option value="in">进货</option>
+                    <option value="out">消耗</option>
+                  </select>
+                </div>
+                <button class="btn btn-info" id="search-history">搜索</button>
+                <button class="btn btn-warning" id="reset-history-search">
+                  重置
+                </button>
+              </div>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="history-start-date">开始日期:</label>
+                  <input type="date" id="history-start-date" />
+                </div>
+                <div class="form-group">
+                  <label for="history-end-date">结束日期:</label>
+                  <input type="date" id="history-end-date" />
+                </div>
+                <button class="btn btn-primary" id="filter-history">
+                  筛选记录
+                </button>
+              </div>
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>日期</th>
+                      <th>品类</th>
+                      <th>类型</th>
+                      <th>数量</th>
+                      <th>单价(元)</th>
+                      <th>金额(元)</th>
+                      <th>部门</th>
+                      <th>备注</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-body">
+                    <!-- 操作记录将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 品类管理模块 -->
+          <div class="module" id="categories-module">
+            <div class="section">
+              <h2>品类管理</h2>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="new-category-name">品类名称</label>
+                  <input
+                    type="text"
+                    id="new-category-name"
+                    placeholder="例如：绿豆酒酿"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="new-category-unit">单位</label>
+                  <input
+                    type="text"
+                    id="new-category-unit"
+                    placeholder="例如：瓶"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="new-category-price">默认单价(元)</label>
+                  <input
+                    type="number"
+                    id="new-category-price"
+                    min="0"
+                    step="0.01"
+                    placeholder="例如:25.5"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="new-category-warning">预警值</label>
+                  <input
+                    type="number"
+                    id="new-category-warning"
+                    min="0"
+                    step="1"
+                    placeholder="例如:5"
+                    value="5"
+                  />
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-success" id="add-category-btn">
+                    添加品类
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="category-search">搜索品类</label>
+                  <input
+                    type="text"
+                    id="category-search"
+                    placeholder="输入品类名称..."
+                  />
+                </div>
+                <button class="btn btn-info" id="search-category">搜索</button>
+                <button class="btn btn-warning" id="reset-category-search">
+                  重置
+                </button>
+                <button class="btn btn-primary" id="save-category-order">
+                  保存排序
+                </button>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 40px">排序</th>
+                      <th>品类名称</th>
+                      <th>单位</th>
+                      <th>默认单价(元)</th>
+                      <th>预警值</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="category-body" class="sortable-container">
+                    <!-- 品类数据将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 部门管理模块 -->
+          <div class="module" id="departments-module">
+            <div class="section">
+              <h2>部门管理</h2>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="new-department-name">部门名称</label>
+                  <input
+                    type="text"
+                    id="new-department-name"
+                    placeholder="例如：萧山一店"
+                  />
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-success" id="add-department-btn">
+                    添加部门
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="department-search">搜索部门</label>
+                  <input
+                    type="text"
+                    id="department-search"
+                    placeholder="输入部门名称..."
+                  />
+                </div>
+                <button class="btn btn-info" id="search-department">
+                  搜索
+                </button>
+                <button class="btn btn-warning" id="reset-department-search">
+                  重置
+                </button>
+              </div>
+
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="dept-start-date">开始日期:</label>
+                  <input type="date" id="dept-start-date" />
+                </div>
+                <div class="form-group">
+                  <label for="dept-end-date">结束日期:</label>
+                  <input type="date" id="dept-end-date" />
+                </div>
+                <button class="btn btn-primary" id="filter-dept">
+                  查看所有部门操作记录
+                </button>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>部门名称</th>
+                      <th>进货量</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="department-body">
+                    <!-- 部门数据将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div
+                class="section"
+                id="dept-history-section"
+                style="display: none"
+              >
+                <h3 id="dept-history-title">部门操作记录</h3>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>日期</th>
+                        <th>品类</th>
+                        <th>类型</th>
+                        <th>数量</th>
+                        <th>单价(元)</th>
+                        <th>金额(元)</th>
+                        <th>部门</th>
+                        <th>备注</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dept-history-body">
+                      <!-- 部门操作记录将通过JavaScript动态生成 -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 报表分析模块 -->
+          <div class="module" id="reports-module">
+            <div class="section">
+              <h2>自定义日期报表</h2>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="report-start-date">开始日期:</label>
+                  <input type="date" id="report-start-date" />
+                </div>
+                <div class="form-group">
+                  <label for="report-end-date">结束日期:</label>
+                  <input type="date" id="report-end-date" />
+                </div>
+                <div class="form-group">
+                  <label for="report-department">选择部门:</label>
+                  <select id="report-department">
+                    <option value="all">所有部门</option>
+                    <!-- 部门选项将通过JavaScript动态生成 -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="report-category">选择品类:</label>
+                  <select id="report-category">
+                    <option value="all">所有品类</option>
+                    <!-- 品类选项将通过JavaScript动态生成 -->
+                  </select>
+                </div>
+                <button class="btn btn-primary" id="generate-report">
+                  生成报表
+                </button>
+                <button class="btn btn-success" id="export-report-excel">
+                  导出Excel
+                </button>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>部门</th>
+                      <th>品类</th>
+                      <th>进货总量</th>
+                      <th>进货总金额(元)</th>
+                      <th>消耗总量</th>
+                      <th>消耗总金额(元)</th>
+                      <th>净进货量</th>
+                      <th>净金额(元)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="monthly-report-body">
+                    <!-- 月度报表数据将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 每日历史库存模块 -->
+          <div class="module" id="daily-history-module">
+            <div class="section">
+              <h2>每日历史库存</h2>
+              <div class="flex-group">
+                <div class="form-group">
+                  <label for="daily-history-date">选择日期:</label>
+                  <input type="date" id="daily-history-date" />
+                </div>
+                <div class="form-group">
+                  <label for="daily-history-dept">选择部门:</label>
+                  <select id="daily-history-dept">
+                    <option value="all">所有部门</option>
+                    <!-- 部门选项将通过JavaScript动态生成 -->
+                  </select>
+                </div>
+                <button class="btn btn-primary" id="view-daily-history">
+                  查看历史库存
+                </button>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>部门</th>
+                      <th>品类</th>
+                      <th>单位</th>
+                      <th>进货量</th>
+                      <th>消耗量</th>
+                      <th>库存量</th>
+                      <th>单价(元)</th>
+                      <th>库存金额(元)</th>
+                      <th>预警值</th>
+                      <th>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody id="daily-history-body">
+                    <!-- 每日历史库存数据将通过JavaScript动态生成 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 数据导出模块 -->
+          <div class="module" id="export-module">
+            <div class="section">
+              <h2>数据导出与备份</h2>
+              <p>为确保数据安全，请定期导出数据备份.</p>
+
+              <div class="export-buttons">
+                <button class="btn btn-primary" id="export-data-btn">
+                  导出数据备份
+                </button>
+                <button class="btn btn-warning" id="import-data-btn">
+                  导入数据备份
+                </button>
+                <button class="btn btn-info" id="print-report-btn">
+                  打印库存报表
+                </button>
+                <button class="btn btn-success" id="quick-export-btn">
+                  快速导出Excel
+                </button>
+              </div>
+
+              <div class="form-group" style="margin-top: 15px">
+                <label for="data-file">选择备份文件:</label>
+                <input type="file" id="data-file" accept=".json" />
+              </div>
+
+              <div class="form-group">
+                <label for="auto-backup">自动备份设置:</label>
+                <select id="auto-backup">
+                  <option value="none">不自动备份</option>
+                  <option value="daily">每天备份</option>
+                  <option value="weekly">每周备份</option>
+                  <option value="monthly">每月备份</option>
+                </select>
+              </div>
+
+              <div
+                id="backup-status"
+                style="margin-top: 10px; font-size: 0.85rem; color: #666"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>老奶奶面馆库存管理系统 &copy; 2025</p>
+      </footer>
+    </div>
+
+    <!-- 长按提示 -->
+    <div class="long-press-hint" id="long-press-hint">
+      长按项目可激活拖拽排序
+    </div>
+
+    <script>
+      // 数据管理模块
+      const DataManager = {
+        // 初始化品类配置 - 清空现有品类
+        categoryConfig:
+          JSON.parse(localStorage.getItem("categoryConfig")) || {},
+
+        // 品类排序配置
+        categoryOrder: JSON.parse(localStorage.getItem("categoryOrder")) || [],
+
+        // 部门配置
+        departments: JSON.parse(localStorage.getItem("departments")) || [
+          "萧山一店",
+          "星耀城二店",
+        ],
+
+        // 默认部门设置
+        defaultDepartment:
+          localStorage.getItem("defaultDepartment") || "萧山一店",
+
+        // 库存数据
+        inventoryData: JSON.parse(localStorage.getItem("inventoryData")) || {},
+
+        // 操作记录
+        operationHistory:
+          JSON.parse(localStorage.getItem("operationHistory")) || [],
+
+        // 每日历史库存数据
+        dailyInventoryHistory:
+          JSON.parse(localStorage.getItem("dailyInventoryHistory")) || {},
+
+        // 保存数据到本地存储
+        saveData() {
+          localStorage.setItem(
+            "categoryConfig",
+            JSON.stringify(this.categoryConfig)
+          );
+          localStorage.setItem(
+            "categoryOrder",
+            JSON.stringify(this.categoryOrder)
+          );
+          localStorage.setItem("departments", JSON.stringify(this.departments));
+          localStorage.setItem("defaultDepartment", this.defaultDepartment);
+          localStorage.setItem(
+            "inventoryData",
+            JSON.stringify(this.inventoryData)
+          );
+          localStorage.setItem(
+            "operationHistory",
+            JSON.stringify(this.operationHistory)
+          );
+          localStorage.setItem(
+            "dailyInventoryHistory",
+            JSON.stringify(this.dailyInventoryHistory)
+          );
+        },
+
+        // 初始化数据
+        init() {
+          // 如果部门为空，添加默认部门
+          if (this.departments.length === 0) {
+            this.departments = ["萧山一店", "星耀城二店"];
+          }
+
+          // 如果默认部门不在部门列表中，设置为第一个部门
+          if (!this.departments.includes(this.defaultDepartment)) {
+            this.defaultDepartment = this.departments[0];
+          }
+
+          this.saveData();
+        },
+
+        // 添加品类
+        addCategory(name, unit, price, warning) {
+          if (this.categoryConfig[name]) {
+            return false; // 品类已存在
+          }
+
+          this.categoryConfig[name] = {
+            unit,
+            price: parseFloat(price),
+            warning: parseInt(warning),
+          };
+
+          // 添加到排序列表
+          if (!this.categoryOrder.includes(name)) {
+            this.categoryOrder.push(name);
+          }
+
+          // 初始化每个部门的库存数据
+          this.departments.forEach((dept) => {
+            if (!this.inventoryData[dept]) {
+              this.inventoryData[dept] = {};
+            }
+            this.inventoryData[dept][name] = {
+              in: 0,
+              out: 0,
+              stock: 0,
+            };
+          });
+
+          this.saveData();
+          return true;
+        },
+
+        // 删除品类
+        deleteCategory(name) {
+          if (!this.categoryConfig[name]) {
+            return false;
+          }
+
+          // 从品类配置中删除
+          delete this.categoryConfig[name];
+
+          // 从排序列表中删除
+          const index = this.categoryOrder.indexOf(name);
+          if (index > -1) {
+            this.categoryOrder.splice(index, 1);
+          }
+
+          // 从库存数据中删除
+          this.departments.forEach((dept) => {
+            if (this.inventoryData[dept] && this.inventoryData[dept][name]) {
+              delete this.inventoryData[dept][name];
+            }
+          });
+
+          this.saveData();
+          return true;
+        },
+
+        // 更新品类
+        updateCategory(oldName, newName, unit, price, warning) {
+          if (oldName !== newName && this.categoryConfig[newName]) {
+            return false; // 新名称已存在
+          }
+
+          if (oldName !== newName) {
+            // 更新品类名称
+            this.categoryConfig[newName] = this.categoryConfig[oldName];
+            delete this.categoryConfig[oldName];
+
+            // 更新排序列表
+            const index = this.categoryOrder.indexOf(oldName);
+            if (index > -1) {
+              this.categoryOrder[index] = newName;
+            }
+
+            // 更新库存数据
+            this.departments.forEach((dept) => {
+              if (
+                this.inventoryData[dept] &&
+                this.inventoryData[dept][oldName]
+              ) {
+                this.inventoryData[dept][newName] =
+                  this.inventoryData[dept][oldName];
+                delete this.inventoryData[dept][oldName];
+              }
+            });
+          }
+
+          // 更新品类属性
+          this.categoryConfig[newName].unit = unit;
+          this.categoryConfig[newName].price = parseFloat(price);
+          this.categoryConfig[newName].warning = parseInt(warning);
+
+          this.saveData();
+          return true;
+        },
+
+        // 添加部门
+        addDepartment(name) {
+          if (this.departments.includes(name)) {
+            return false; // 部门已存在
+          }
+
+          this.departments.push(name);
+          this.inventoryData[name] = {};
+
+          // 初始化新部门的品类库存
+          Object.keys(this.categoryConfig).forEach((category) => {
+            this.inventoryData[name][category] = {
+              in: 0,
+              out: 0,
+              stock: 0,
+            };
+          });
+
+          this.saveData();
+          return true;
+        },
+
+        // 删除部门
+        deleteDepartment(name) {
+          if (name === this.defaultDepartment) {
+            return false; // 不能删除默认部门
+          }
+          const index = this.departments.indexOf(name);
+          if (index === -1) {
+            return false;
+          }
+
+          this.departments.splice(index, 1);
+          delete this.inventoryData[name];
+
+          this.saveData();
+          return true;
+        },
+
+        // 设置默认部门
+        setDefaultDepartment(name) {
+          if (!this.departments.includes(name)) {
+            return false;
+          }
+
+          this.defaultDepartment = name;
+          this.saveData();
+          return true;
+        },
+
+        // 执行库存操作
+        performOperation(category, quantity, type, department, date, notes) {
+          if (!this.categoryConfig[category]) {
+            return false;
+          }
+
+          if (!this.departments.includes(department)) {
+            return false;
+          }
+
+          const qty = parseInt(quantity);
+          if (isNaN(qty) || qty <= 0) {
+            return false;
+          }
+
+          // 更新库存数据
+          if (type === "in") {
+            this.inventoryData[department][category].in += qty;
+            this.inventoryData[department][category].stock += qty;
+          } else if (type === "out") {
+            // 检查库存是否足够
+            if (this.inventoryData[department][category].stock < qty) {
+              return false; // 库存不足
+            }
+            this.inventoryData[department][category].out += qty;
+            this.inventoryData[department][category].stock -= qty;
+          }
+
+          // 记录操作历史
+          const operation = {
+            id: Date.now(),
+            date,
+            category,
+            type,
+            quantity: qty,
+            price: this.categoryConfig[category].price,
+            department,
+            notes: notes || "",
+          };
+
+          this.operationHistory.unshift(operation);
+
+          // 记录每日历史库存
+          this.recordDailyInventory(date);
+
+          this.saveData();
+          return true;
+        },
+
+        // 记录每日历史库存
+        recordDailyInventory(date) {
+          if (!this.dailyInventoryHistory[date]) {
+            this.dailyInventoryHistory[date] = {};
+          }
+
+          // 复制当前库存状态到历史记录
+          this.departments.forEach((dept) => {
+            if (!this.dailyInventoryHistory[date][dept]) {
+              this.dailyInventoryHistory[date][dept] = {};
+            }
+
+            Object.keys(this.categoryConfig).forEach((category) => {
+              this.dailyInventoryHistory[date][dept][category] = {
+                ...this.inventoryData[dept][category],
+              };
+            });
+          });
+
+          this.saveData();
+        },
+
+        // 获取每日历史库存
+        getDailyInventory(date, department = "all") {
+          if (!this.dailyInventoryHistory[date]) {
+            return null;
+          }
+
+          if (department === "all") {
+            return this.dailyInventoryHistory[date];
+          }
+
+          return this.dailyInventoryHistory[date][department] || null;
+        },
+
+        // 撤销上一次操作
+        undoLastOperation() {
+          if (this.operationHistory.length === 0) {
+            return false;
+          }
+
+          const lastOperation = this.operationHistory[0];
+
+          // 恢复库存数据
+          if (lastOperation.type === "in") {
+            this.inventoryData[lastOperation.department][
+              lastOperation.category
+            ].in -= lastOperation.quantity;
+            this.inventoryData[lastOperation.department][
+              lastOperation.category
+            ].stock -= lastOperation.quantity;
+          } else if (lastOperation.type === "out") {
+            this.inventoryData[lastOperation.department][
+              lastOperation.category
+            ].out -= lastOperation.quantity;
+            this.inventoryData[lastOperation.department][
+              lastOperation.category
+            ].stock += lastOperation.quantity;
+          }
+
+          // 从历史记录中移除
+          this.operationHistory.shift();
+
+          // 更新每日历史库存
+          this.recordDailyInventory(new Date().toISOString().split("T")[0]);
+
+          this.saveData();
+          return true;
+        },
+
+        // 获取库存统计
+        getInventoryStats(department = "all") {
+          let totalCategories = 0;
+          let totalAmount = 0;
+          let lowStockCount = 0;
+
+          if (department === "all") {
+            totalCategories = Object.keys(this.categoryConfig).length;
+
+            this.departments.forEach((dept) => {
+              Object.keys(this.categoryConfig).forEach((category) => {
+                const stock = this.inventoryData[dept][category].stock;
+                const price = this.categoryConfig[category].price;
+                totalAmount += stock * price;
+
+                if (stock <= this.categoryConfig[category].warning) {
+                  lowStockCount++;
+                }
+              });
+            });
+          } else {
+            if (this.inventoryData[department]) {
+              totalCategories = Object.keys(this.categoryConfig).length;
+
+              Object.keys(this.categoryConfig).forEach((category) => {
+                const stock = this.inventoryData[department][category].stock;
+                const price = this.categoryConfig[category].price;
+                totalAmount += stock * price;
+
+                if (stock <= this.categoryConfig[category].warning) {
+                  lowStockCount++;
+                }
+              });
+            }
+          }
+
+          return {
+            totalCategories,
+            totalAmount: parseFloat(totalAmount.toFixed(2)),
+            lowStockCount,
+          };
+        },
+
+        // 获取部门统计
+        getDepartmentStats() {
+          const stats = {};
+
+          this.departments.forEach((dept) => {
+            stats[dept] = this.getInventoryStats(dept);
+          });
+
+          return stats;
+        },
+
+        // 获取库存预警列表
+        getLowStockAlerts() {
+          const alerts = [];
+
+          this.departments.forEach((dept) => {
+            Object.keys(this.categoryConfig).forEach((category) => {
+              const stock = this.inventoryData[dept][category].stock;
+              const warning = this.categoryConfig[category].warning;
+
+              if (stock <= warning) {
+                alerts.push({
+                  category,
+                  department: dept,
+                  stock,
+                  warning,
+                  status:
+                    stock === 0
+                      ? "缺货"
+                      : stock <= warning / 2
+                      ? "严重不足"
+                      : "不足",
+                });
+              }
+            });
+          });
+
+          return alerts;
+        },
+
+        // 获取操作记录
+        getOperationHistory(filters = {}) {
+          let history = [...this.operationHistory];
+
+          if (filters.category) {
+            history = history.filter((record) =>
+              record.category
+                .toLowerCase()
+                .includes(filters.category.toLowerCase())
+            );
+          }
+
+          if (filters.type && filters.type !== "all") {
+            history = history.filter((record) => record.type === filters.type);
+          }
+
+          if (filters.startDate) {
+            history = history.filter(
+              (record) => record.date >= filters.startDate
+            );
+          }
+
+          if (filters.endDate) {
+            history = history.filter(
+              (record) => record.date <= filters.endDate
+            );
+          }
+
+          return history;
+        },
+
+        // 获取报表数据
+        getReportData(
+          startDate,
+          endDate,
+          department = "all",
+          category = "all"
+        ) {
+          const reportData = {};
+
+          // 筛选符合条件的操作记录
+          const filteredHistory = this.operationHistory.filter((record) => {
+            if (record.date < startDate || record.date > endDate) {
+              return false;
+            }
+
+            if (department !== "all" && record.department !== department) {
+              return false;
+            }
+
+            if (category !== "all" && record.category !== category) {
+              return false;
+            }
+
+            return true;
+          });
+
+          // 按部门和品类汇总数据
+          filteredHistory.forEach((record) => {
+            const key = `${record.department}-${record.category}`;
+
+            if (!reportData[key]) {
+              reportData[key] = {
+                department: record.department,
+                category: record.category,
+                inQuantity: 0,
+                inAmount: 0,
+                outQuantity: 0,
+                outAmount: 0,
+              };
+            }
+
+            if (record.type === "in") {
+              reportData[key].inQuantity += record.quantity;
+              reportData[key].inAmount += record.quantity * record.price;
+            } else if (record.type === "out") {
+              reportData[key].outQuantity += record.quantity;
+              reportData[key].outAmount += record.quantity * record.price;
+            }
+          });
+
+          // 计算净进货量和净金额
+          Object.keys(reportData).forEach((key) => {
+            reportData[key].netQuantity =
+              reportData[key].inQuantity - reportData[key].outQuantity;
+            reportData[key].netAmount =
+              reportData[key].inAmount - reportData[key].outAmount;
+          });
+
+          return Object.values(reportData);
+        },
+
+        // 导出数据
+        exportData() {
+          const data = {
+            categoryConfig: this.categoryConfig,
+            categoryOrder: this.categoryOrder,
+            departments: this.departments,
+            defaultDepartment: this.defaultDepartment,
+            inventoryData: this.inventoryData,
+            operationHistory: this.operationHistory,
+            dailyInventoryHistory: this.dailyInventoryHistory,
+            exportDate: new Date().toISOString(),
+          };
+
+          return JSON.stringify(data, null, 2);
+        },
+
+        // 导入数据
+        importData(jsonData) {
+          try {
+            const data = JSON.parse(jsonData);
+
+            if (data.categoryConfig) this.categoryConfig = data.categoryConfig;
+            if (data.categoryOrder) this.categoryOrder = data.categoryOrder;
+            if (data.departments) this.departments = data.departments;
+            if (data.defaultDepartment)
+              this.defaultDepartment = data.defaultDepartment;
+            if (data.inventoryData) this.inventoryData = data.inventoryData;
+            if (data.operationHistory)
+              this.operationHistory = data.operationHistory;
+            if (data.dailyInventoryHistory)
+              this.dailyInventoryHistory = data.dailyInventoryHistory;
+
+            this.saveData();
+            return true;
+          } catch (error) {
+            console.error("导入数据失败:", error);
+            return false;
+          }
+        },
+
+        // 更新品类排序
+        updateCategoryOrder(newOrder) {
+          this.categoryOrder = newOrder;
+          this.saveData();
+        },
+      };
+
+      // UI管理模块
+      const UIManager = {
+        // 初始化UI
+        init() {
+          this.bindEvents();
+          this.renderAll();
+          this.setTodayDate();
+
+          // 显示长按提示（仅移动端）
+          if (window.innerWidth <= 768) {
+            setTimeout(() => {
+              const hint = document.getElementById("long-press-hint");
+              hint.style.display = "block";
+              setTimeout(() => {
+                hint.style.display = "none";
+              }, 3000);
+            }, 1000);
+          }
+        },
+
+        // 绑定事件
+        bindEvents() {
+          // 导航菜单点击事件
+          document.querySelectorAll(".nav-item").forEach((item) => {
+            item.addEventListener("click", () => {
+              const module = item.getAttribute("data-module");
+              this.switchModule(module);
+            });
+          });
+
+          // 品类管理事件
+          document
+            .getElementById("add-category-btn")
+            .addEventListener("click", () => {
+              this.addCategory();
+            });
+
+          document
+            .getElementById("search-category")
+            .addEventListener("click", () => {
+              this.searchCategory();
+            });
+
+          document
+            .getElementById("reset-category-search")
+            .addEventListener("click", () => {
+              this.resetCategorySearch();
+            });
+
+          document
+            .getElementById("save-category-order")
+            .addEventListener("click", () => {
+              this.saveCategoryOrder();
+            });
+
+          // 部门管理事件
+          document
+            .getElementById("add-department-btn")
+            .addEventListener("click", () => {
+              this.addDepartment();
+            });
+
+          document
+            .getElementById("search-department")
+            .addEventListener("click", () => {
+              this.searchDepartment();
+            });
+
+          document
+            .getElementById("reset-department-search")
+            .addEventListener("click", () => {
+              this.resetDepartmentSearch();
+            });
+
+          document
+            .getElementById("filter-dept")
+            .addEventListener("click", () => {
+              this.filterDepartmentHistory();
+            });
+
+          document
+            .getElementById("set-default-dept")
+            .addEventListener("click", () => {
+              this.setDefaultDepartment();
+            });
+
+          // 库存操作事件
+          document.getElementById("save-btn").addEventListener("click", () => {
+            this.saveOperation();
+          });
+
+          document.getElementById("undo-btn").addEventListener("click", () => {
+            this.undoOperation();
+          });
+
+          document
+            .getElementById("search-history")
+            .addEventListener("click", () => {
+              this.searchHistory();
+            });
+
+          document
+            .getElementById("reset-history-search")
+            .addEventListener("click", () => {
+              this.resetHistorySearch();
+            });
+
+          document
+            .getElementById("filter-history")
+            .addEventListener("click", () => {
+              this.filterHistory();
+            });
+
+          // 库存管理事件
+          document
+            .getElementById("search-inventory")
+            .addEventListener("click", () => {
+              this.searchInventory();
+            });
+
+          document
+            .getElementById("reset-inventory-search")
+            .addEventListener("click", () => {
+              this.resetInventorySearch();
+            });
+
+          document
+            .getElementById("save-inventory-order")
+            .addEventListener("click", () => {
+              this.saveInventoryOrder();
+            });
+
+          // 品类搜索下拉框事件
+          document
+            .getElementById("category-search")
+            .addEventListener("input", () => {
+              this.showCategoryDropdown();
+            });
+
+          document.addEventListener("click", (e) => {
+            if (!e.target.closest(".search-select-container")) {
+              document.getElementById("category-dropdown").style.display =
+                "none";
+            }
+          });
+
+          // 报表事件
+          document
+            .getElementById("generate-report")
+            .addEventListener("click", () => {
+              this.generateReport();
+            });
+
+          document
+            .getElementById("export-report-excel")
+            .addEventListener("click", () => {
+              this.exportReportExcel();
+            });
+
+          // 每日历史库存事件
+          document
+            .getElementById("view-daily-history")
+            .addEventListener("click", () => {
+              this.viewDailyHistory();
+            });
+
+          // 数据导出事件
+          document
+            .getElementById("export-data-btn")
+            .addEventListener("click", () => {
+              this.exportData();
+            });
+
+          document
+            .getElementById("import-data-btn")
+            .addEventListener("click", () => {
+              this.importData();
+            });
+
+          document
+            .getElementById("print-report-btn")
+            .addEventListener("click", () => {
+              this.printReport();
+            });
+
+          document
+            .getElementById("quick-export-btn")
+            .addEventListener("click", () => {
+              this.quickExport();
+            });
+
+          // 自动备份设置
+          document
+            .getElementById("auto-backup")
+            .addEventListener("change", (e) => {
+              this.setAutoBackup(e.target.value);
+            });
+
+          // 设置今天为默认日期
+          const today = new Date().toISOString().split("T")[0];
+          document.getElementById("date").value = today;
+          document.getElementById("date").max = today;
+          document.getElementById("history-start-date").value = today;
+          document.getElementById("history-end-date").value = today;
+          document.getElementById("dept-start-date").value = today;
+          document.getElementById("dept-end-date").value = today;
+          document.getElementById("report-start-date").value = today;
+          document.getElementById("report-end-date").value = today;
+          document.getElementById("daily-history-date").value = today;
+        },
+
+        // 切换模块
+        switchModule(module) {
+          // 更新导航菜单
+          document.querySelectorAll(".nav-item").forEach((item) => {
+            item.classList.remove("active");
+          });
+          document
+            .querySelector(`.nav-item[data-module="${module}"]`)
+            .classList.add("active");
+
+          // 更新模块显示
+          document.querySelectorAll(".module").forEach((mod) => {
+            mod.classList.remove("active");
+          });
+          document.getElementById(`${module}-module`).classList.add("active");
+
+          // 渲染特定模块内容
+          if (module === "dashboard") {
+            this.renderDashboard();
+          } else if (module === "inventory") {
+            this.renderInventory();
+          } else if (module === "operations") {
+            this.renderOperationHistory();
+          } else if (module === "categories") {
+            this.renderCategories();
+          } else if (module === "departments") {
+            this.renderDepartments();
+          } else if (module === "reports") {
+            this.renderReportFilters();
+          } else if (module === "daily-history") {
+            this.renderDailyHistoryFilters();
+          }
+        },
+
+        // 设置今天日期
+        setTodayDate() {
+          const today = new Date().toISOString().split("T")[0];
+          const dateInputs = document.querySelectorAll('input[type="date"]');
+          dateInputs.forEach((input) => {
+            if (!input.value) {
+              input.value = today;
+            }
+            input.max = today;
+          });
+        },
+
+        // 渲染所有UI组件
+        renderAll() {
+          this.renderDashboard();
+          this.renderInventory();
+          this.renderOperationHistory();
+          this.renderCategories();
+          this.renderDepartments();
+          this.renderReportFilters();
+          this.renderDailyHistoryFilters();
+          this.renderDefaultDeptInfo();
+        },
+
+        // 渲染仪表盘
+        renderDashboard() {
+          const stats = DataManager.getInventoryStats();
+          const deptStats = DataManager.getDepartmentStats();
+          const alerts = DataManager.getLowStockAlerts();
+
+          // 更新总览卡片
+          document.getElementById("total-categories").textContent =
+            stats.totalCategories;
+          document.getElementById(
+            "total-amount"
+          ).textContent = `¥${stats.totalAmount}`;
+          document.getElementById("low-stock-count").textContent =
+            stats.lowStockCount;
+
+          // 更新部门统计
+          const deptStatsContainer = document.getElementById(
+            "dashboard-dept-stats"
+          );
+          deptStatsContainer.innerHTML = "";
+
+          Object.keys(deptStats).forEach((dept) => {
+            const stat = deptStats[dept];
+            const card = document.createElement("div");
+            card.className = "dept-stat-card";
+            card.innerHTML = `
+                        <h3>${dept}</h3>
+                        <div class="dept-stat-value">${
+                          stat.totalCategories
+                        }种</div>
+                        <div style="font-size: 0.9rem; margin-top: 5px;">库存金额: ¥${
+                          stat.totalAmount
+                        }</div>
+                        <div style="font-size: 0.8rem; margin-top: 3px; color: ${
+                          stat.lowStockCount > 0 ? "#e74c3c" : "#27ae60"
+                        }">
+                            预警: ${stat.lowStockCount}个
+                        </div>
+                    `;
+            deptStatsContainer.appendChild(card);
+          });
+
+          // 更新预警列表
+          const alertBody = document.getElementById("alert-body");
+          alertBody.innerHTML = "";
+
+          if (alerts.length === 0) {
+            alertBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">暂无库存预警</td></tr>`;
+          } else {
+            alerts.forEach((alert) => {
+              const row = document.createElement("tr");
+              let statusClass = "";
+              let statusText = "";
+
+              if (alert.status === "缺货") {
+                statusClass = "alert-high";
+                statusText = "缺货";
+              } else if (alert.status === "严重不足") {
+                statusClass = "alert-medium";
+                statusText = "严重不足";
+              } else {
+                statusClass = "alert-low";
+                statusText = "不足";
+              }
+
+              row.innerHTML = `
+                            <td>${alert.category}</td>
+                            <td>${alert.department}</td>
+                            <td>${alert.stock}</td>
+                            <td>${alert.warning}</td>
+                            <td><span class="alert-badge ${statusClass}">${statusText}</span></td>
+                        `;
+              alertBody.appendChild(row);
+            });
+          }
+        },
+
+        // 渲染库存管理
+        renderInventory(dept = "all", search = "") {
+          const deptSelect = document.getElementById("inventory-dept");
+          deptSelect.innerHTML = '<option value="all">所有部门</option>';
+
+          DataManager.departments.forEach((dept) => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            deptSelect.appendChild(option);
+          });
+
+          // 如果指定了部门，设置选中
+          if (dept !== "all") {
+            deptSelect.value = dept;
+          }
+
+          // 渲染库存表格
+          const inventoryBody = document.getElementById("inventory-body");
+          inventoryBody.innerHTML = "";
+
+          let hasData = false;
+
+          if (dept === "all") {
+            DataManager.departments.forEach((dept) => {
+              Object.keys(DataManager.categoryConfig).forEach((category) => {
+                if (
+                  search &&
+                  !category.toLowerCase().includes(search.toLowerCase())
+                ) {
+                  return;
+                }
+
+                hasData = true;
+                this.renderInventoryRow(inventoryBody, dept, category);
+              });
+            });
+          } else {
+            Object.keys(DataManager.categoryConfig).forEach((category) => {
+              if (
+                search &&
+                !category.toLowerCase().includes(search.toLowerCase())
+              ) {
+                return;
+              }
+
+              hasData = true;
+              this.renderInventoryRow(inventoryBody, dept, category);
+            });
+          }
+
+          if (!hasData) {
+            inventoryBody.innerHTML = `<tr><td colspan="10" style="text-align: center;">暂无库存数据</td></tr>`;
+          }
+
+          // 初始化拖拽排序
+          this.initSortable("inventory-body");
+        },
+
+        // 渲染库存行
+        renderInventoryRow(container, dept, category) {
+          const config = DataManager.categoryConfig[category];
+          const inventory = DataManager.inventoryData[dept][category];
+          const stock = inventory.stock;
+          const warning = config.warning;
+          const price = config.price;
+          const amount = stock * price;
+
+          let statusClass = "stock-ok";
+          let statusText = "正常";
+
+          if (stock === 0) {
+            statusClass = "stock-warning";
+            statusText = "缺货";
+          } else if (stock <= warning) {
+            statusClass = "stock-warning";
+            statusText = stock <= warning / 2 ? "严重不足" : "不足";
+          }
+
+          const row = document.createElement("tr");
+          row.className = "sortable-item";
+          row.setAttribute("data-category", category);
+          row.setAttribute("data-dept", dept);
+
+          // 获取品类在排序列表中的位置
+          const orderIndex = DataManager.categoryOrder.indexOf(category);
+
+          row.innerHTML = `
+                    <td>
+                        <span class="drag-handle">≡</span>
+                        ${orderIndex + 1}
+                    </td>
+                    <td>${category}</td>
+                    <td>${config.unit}</td>
+                    <td>${inventory.in}</td>
+                    <td>${inventory.out}</td>
+                    <td>${stock}</td>
+                    <td>${price}</td>
+                    <td>${amount.toFixed(2)}</td>
+                    <td>${warning}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                `;
+
+          container.appendChild(row);
+        },
+
+        // 渲染操作历史
+        renderOperationHistory(filters = {}) {
+          const history = DataManager.getOperationHistory(filters);
+          const historyBody = document.getElementById("history-body");
+          historyBody.innerHTML = "";
+
+          if (history.length === 0) {
+            historyBody.innerHTML = `<tr><td colspan="8" style="text-align: center;">暂无操作记录</td></tr>`;
+          } else {
+            history.forEach((record) => {
+              const row = document.createElement("tr");
+              const amount = record.quantity * record.price;
+              const typeClass =
+                record.type === "in" ? "operation-in" : "operation-out";
+              const typeText = record.type === "in" ? "进货" : "消耗";
+
+              row.innerHTML = `
+                            <td>${record.date}</td>
+                            <td>${record.category}</td>
+                            <td class="${typeClass}">${typeText}</td>
+                            <td>${record.quantity}</td>
+                            <td>${record.price}</td>
+                            <td>${amount.toFixed(2)}</td>
+                            <td>${record.department}</td>
+                            <td>${record.notes}</td>
+                        `;
+              historyBody.appendChild(row);
+            });
+          }
+        },
+
+        // 渲染品类管理
+        renderCategories(search = "") {
+          const categoryBody = document.getElementById("category-body");
+          categoryBody.innerHTML = "";
+
+          let hasData = false;
+
+          DataManager.categoryOrder.forEach((category, index) => {
+            if (
+              search &&
+              !category.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return;
+            }
+
+            hasData = true;
+            const config = DataManager.categoryConfig[category];
+
+            const row = document.createElement("tr");
+            row.className = "sortable-item";
+            row.setAttribute("data-category", category);
+
+            row.innerHTML = `
+                        <td>
+                            <span class="drag-handle">≡</span>
+                            ${index + 1}
+                        </td>
+                        <td>${category}</td>
+                        <td>${config.unit}</td>
+                        <td>${config.price}</td>
+                        <td>${config.warning}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-warning edit-category-btn" data-category="${category}">编辑</button>
+                            <button class="btn btn-danger delete-category-btn" data-category="${category}">删除</button>
+                        </td>
+                    `;
+
+            categoryBody.appendChild(row);
+          });
+
+          if (!hasData) {
+            categoryBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">暂无品类数据</td></tr>`;
+          }
+
+          // 绑定编辑和删除按钮事件
+          document.querySelectorAll(".edit-category-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const category = btn.getAttribute("data-category");
+              this.editCategory(category);
+            });
+          });
+
+          document.querySelectorAll(".delete-category-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const category = btn.getAttribute("data-category");
+              this.deleteCategory(category);
+            });
+          });
+
+          // 初始化拖拽排序
+          this.initSortable("category-body");
+        },
+
+        // 渲染部门管理
+        renderDepartments(search = "") {
+          const departmentBody = document.getElementById("department-body");
+          departmentBody.innerHTML = "";
+
+          let hasData = false;
+
+          DataManager.departments.forEach((dept) => {
+            if (search && !dept.toLowerCase().includes(search.toLowerCase())) {
+              return;
+            }
+
+            hasData = true;
+            const stats = DataManager.getInventoryStats(dept);
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>
+                            ${dept}
+                            ${
+                              dept === DataManager.defaultDepartment
+                                ? '<span class="default-dept-badge">默认</span>'
+                                : ""
+                            }
+                        </td>
+                        <td>${stats.totalAmount.toFixed(2)}元</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-info view-dept-history-btn" data-dept="${dept}">查看记录</button>
+                            ${
+                              dept !== DataManager.defaultDepartment
+                                ? `<button class="btn btn-danger delete-dept-btn" data-dept="${dept}">删除</button>`
+                                : ""
+                            }
+                        </td>
+                    `;
+
+            departmentBody.appendChild(row);
+          });
+
+          if (!hasData) {
+            departmentBody.innerHTML = `<tr><td colspan="3" style="text-align: center;">暂无部门数据</td></tr>`;
+          }
+
+          // 绑定查看记录和删除按钮事件
+          document.querySelectorAll(".view-dept-history-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const dept = btn.getAttribute("data-dept");
+              this.viewDepartmentHistory(dept);
+            });
+          });
+
+          document.querySelectorAll(".delete-dept-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const dept = btn.getAttribute("data-dept");
+              this.deleteDepartment(dept);
+            });
+          });
+        },
+
+        // 渲染报表筛选器
+        renderReportFilters() {
+          const deptSelect = document.getElementById("report-department");
+          const categorySelect = document.getElementById("report-category");
+
+          // 清空现有选项
+          deptSelect.innerHTML = '<option value="all">所有部门</option>';
+          categorySelect.innerHTML = '<option value="all">所有品类</option>';
+
+          // 添加部门选项
+          DataManager.departments.forEach((dept) => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            deptSelect.appendChild(option);
+          });
+
+          // 添加品类选项
+          DataManager.categoryOrder.forEach((category) => {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
+          });
+        },
+
+        // 渲染每日历史库存筛选器
+        renderDailyHistoryFilters() {
+          const deptSelect = document.getElementById("daily-history-dept");
+
+          // 清空现有选项
+          deptSelect.innerHTML = '<option value="all">所有部门</option>';
+
+          // 添加部门选项
+          DataManager.departments.forEach((dept) => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            deptSelect.appendChild(option);
+          });
+        },
+
+        // 渲染默认部门信息
+        renderDefaultDeptInfo() {
+          const defaultDeptInfo = document.getElementById("default-dept-info");
+          defaultDeptInfo.textContent = `当前默认部门: ${DataManager.defaultDepartment}`;
+
+          // 更新部门下拉框
+          const deptSelect = document.getElementById("department");
+          deptSelect.innerHTML = "";
+
+          DataManager.departments.forEach((dept) => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            if (dept === DataManager.defaultDepartment) {
+              option.selected = true;
+            }
+            deptSelect.appendChild(option);
+          });
+        },
+
+        // 显示品类下拉框
+        showCategoryDropdown() {
+          const input = document.getElementById("category-search");
+          const dropdown = document.getElementById("category-dropdown");
+          const searchTerm = input.value.toLowerCase();
+
+          dropdown.innerHTML = "";
+
+          if (searchTerm === "") {
+            dropdown.style.display = "none";
+            return;
+          }
+
+          const matchingCategories = DataManager.categoryOrder.filter(
+            (category) => category.toLowerCase().includes(searchTerm)
+          );
+
+          if (matchingCategories.length === 0) {
+            dropdown.style.display = "none";
+            return;
+          }
+
+          matchingCategories.forEach((category) => {
+            const option = document.createElement("div");
+            option.className = "search-select-option";
+            option.textContent = category;
+            option.addEventListener("click", () => {
+              input.value = category;
+              document.getElementById("category").value = category;
+              dropdown.style.display = "none";
+            });
+            dropdown.appendChild(option);
+          });
+
+          dropdown.style.display = "block";
+        },
+
+        // 添加品类
+        addCategory() {
+          const name = document
+            .getElementById("new-category-name")
+            .value.trim();
+          const unit = document
+            .getElementById("new-category-unit")
+            .value.trim();
+          const price = document.getElementById("new-category-price").value;
+          const warning = document.getElementById("new-category-warning").value;
+
+          if (!name || !unit || !price) {
+            alert("请填写完整的品类信息！");
+            return;
+          }
+
+          if (DataManager.addCategory(name, unit, price, warning)) {
+            alert("品类添加成功！");
+            document.getElementById("new-category-name").value = "";
+            document.getElementById("new-category-unit").value = "";
+            document.getElementById("new-category-price").value = "";
+            document.getElementById("new-category-warning").value = "5";
+            this.renderCategories();
+            this.renderInventory();
+            this.renderDashboard();
+            this.renderReportFilters();
+          } else {
+            alert("品类已存在！");
+          }
+        },
+
+        // 编辑品类
+        editCategory(category) {
+          const config = DataManager.categoryConfig[category];
+
+          const newName = prompt("请输入新的品类名称:", category);
+          if (newName === null) return;
+
+          const newUnit = prompt("请输入新的单位:", config.unit);
+          if (newUnit === null) return;
+
+          const newPrice = prompt("请输入新的默认单价:", config.price);
+          if (newPrice === null) return;
+
+          const newWarning = prompt("请输入新的预警值:", config.warning);
+          if (newWarning === null) return;
+
+          if (
+            DataManager.updateCategory(
+              category,
+              newName,
+              newUnit,
+              newPrice,
+              newWarning
+            )
+          ) {
+            alert("品类更新成功！");
+            this.renderCategories();
+            this.renderInventory();
+            this.renderDashboard();
+            this.renderReportFilters();
+          } else {
+            alert("更新失败，可能是新名称已存在！");
+          }
+        },
+
+        // 删除品类
+        deleteCategory(category) {
+          if (confirm(`确定要删除品类"${category}"吗？此操作不可撤销！`)) {
+            if (DataManager.deleteCategory(category)) {
+              alert("品类删除成功！");
+              this.renderCategories();
+              this.renderInventory();
+              this.renderDashboard();
+              this.renderReportFilters();
+            } else {
+              alert("品类删除失败！");
+            }
+          }
+        },
+
+        // 搜索品类
+        searchCategory() {
+          const search = document
+            .getElementById("category-search")
+            .value.trim();
+          this.renderCategories(search);
+        },
+
+        // 重置品类搜索
+        resetCategorySearch() {
+          document.getElementById("category-search").value = "";
+          this.renderCategories();
+        },
+
+        // 保存品类排序
+        saveCategoryOrder() {
+          const items = document.querySelectorAll(
+            "#category-body .sortable-item"
+          );
+          const newOrder = Array.from(items).map((item) =>
+            item.getAttribute("data-category")
+          );
+
+          DataManager.updateCategoryOrder(newOrder);
+          alert("品类排序已保存！");
+          this.renderCategories();
+        },
+
+        // 添加部门
+        addDepartment() {
+          const name = document
+            .getElementById("new-department-name")
+            .value.trim();
+
+          if (!name) {
+            alert("请输入部门名称！");
+            return;
+          }
+
+          if (DataManager.addDepartment(name)) {
+            alert("部门添加成功！");
+            document.getElementById("new-department-name").value = "";
+            this.renderDepartments();
+            this.renderInventory();
+            this.renderDashboard();
+            this.renderReportFilters();
+            this.renderDefaultDeptInfo();
+          } else {
+            alert("部门已存在！");
+          }
+        },
+
+        // 删除部门
+        deleteDepartment(dept) {
+          if (confirm(`确定要删除部门"${dept}"吗？此操作不可撤销！`)) {
+            if (DataManager.deleteDepartment(dept)) {
+              alert("部门删除成功！");
+              this.renderDepartments();
+              this.renderInventory();
+              this.renderDashboard();
+              this.renderReportFilters();
+              this.renderDefaultDeptInfo();
+            } else {
+              alert("部门删除失败！可能是默认部门无法删除。");
+            }
+          }
+        },
+
+        // 搜索部门
+        searchDepartment() {
+          const search = document
+            .getElementById("department-search")
+            .value.trim();
+          this.renderDepartments(search);
+        },
+
+        // 重置部门搜索
+        resetDepartmentSearch() {
+          document.getElementById("department-search").value = "";
+          this.renderDepartments();
+        },
+
+        // 查看部门历史
+        viewDepartmentHistory(dept) {
+          const startDate = document.getElementById("dept-start-date").value;
+          const endDate = document.getElementById("dept-end-date").value;
+
+          if (!startDate || !endDate) {
+            alert("请选择开始日期和结束日期！");
+            return;
+          }
+
+          const history = DataManager.getOperationHistory({
+            startDate,
+            endDate,
+            department: dept,
+          });
+
+          const deptHistoryBody = document.getElementById("dept-history-body");
+          deptHistoryBody.innerHTML = "";
+
+          if (history.length === 0) {
+            deptHistoryBody.innerHTML = `<tr><td colspan="8" style="text-align: center;">该时间段内无操作记录</td></tr>`;
+          } else {
+            history.forEach((record) => {
+              const row = document.createElement("tr");
+              const amount = record.quantity * record.price;
+              const typeClass =
+                record.type === "in" ? "operation-in" : "operation-out";
+              const typeText = record.type === "in" ? "进货" : "消耗";
+
+              row.innerHTML = `
+                            <td>${record.date}</td>
+                            <td>${record.category}</td>
+                            <td class="${typeClass}">${typeText}</td>
+                            <td>${record.quantity}</td>
+                            <td>${record.price}</td>
+                            <td>${amount.toFixed(2)}</td>
+                            <td>${record.department}</td>
+                            <td>${record.notes}</td>
+                        `;
+              deptHistoryBody.appendChild(row);
+            });
+          }
+
+          document.getElementById(
+            "dept-history-title"
+          ).textContent = `${dept}操作记录 (${startDate} 至 ${endDate})`;
+          document.getElementById("dept-history-section").style.display =
+            "block";
+        },
+
+        // 筛选部门历史
+        filterDepartmentHistory() {
+          const startDate = document.getElementById("dept-start-date").value;
+          const endDate = document.getElementById("dept-end-date").value;
+
+          if (!startDate || !endDate) {
+            alert("请选择开始日期和结束日期！");
+            return;
+          }
+
+          const history = DataManager.getOperationHistory({
+            startDate,
+            endDate,
+          });
+
+          const deptHistoryBody = document.getElementById("dept-history-body");
+          deptHistoryBody.innerHTML = "";
+
+          if (history.length === 0) {
+            deptHistoryBody.innerHTML = `<tr><td colspan="8" style="text-align: center;">该时间段内无操作记录</td></tr>`;
+          } else {
+            history.forEach((record) => {
+              const row = document.createElement("tr");
+              const amount = record.quantity * record.price;
+              const typeClass =
+                record.type === "in" ? "operation-in" : "operation-out";
+              const typeText = record.type === "in" ? "进货" : "消耗";
+
+              row.innerHTML = `
+                            <td>${record.date}</td>
+                            <td>${record.category}</td>
+                            <td class="${typeClass}">${typeText}</td>
+                            <td>${record.quantity}</td>
+                            <td>${record.price}</td>
+                            <td>${amount.toFixed(2)}</td>
+                            <td>${record.department}</td>
+                            <td>${record.notes}</td>
+                        `;
+              deptHistoryBody.appendChild(row);
+            });
+          }
+
+          document.getElementById(
+            "dept-history-title"
+          ).textContent = `所有部门操作记录 (${startDate} 至 ${endDate})`;
+          document.getElementById("dept-history-section").style.display =
+            "block";
+        },
+
+        // 设置默认部门
+        setDefaultDepartment() {
+          const deptSelect = document.getElementById("department");
+          const selectedDept = deptSelect.value;
+
+          if (DataManager.setDefaultDepartment(selectedDept)) {
+            alert(`已设置 ${selectedDept} 为默认部门！`);
+            this.renderDefaultDeptInfo();
+          } else {
+            alert("设置默认部门失败！");
+          }
+        },
+
+        // 保存操作
+        saveOperation() {
+          const category = document.getElementById("category").value;
+          const quantity = document.getElementById("quantity").value;
+          const type = document.getElementById("operation-type").value;
+          const department = document.getElementById("department").value;
+          const date = document.getElementById("date").value;
+          const notes = document.getElementById("notes").value;
+
+          if (!category) {
+            alert("请选择品类！");
+            return;
+          }
+
+          if (!quantity || parseInt(quantity) <= 0) {
+            alert("请输入有效的数量！");
+            return;
+          }
+
+          if (!date) {
+            alert("请选择日期！");
+            return;
+          }
+
+          if (
+            DataManager.performOperation(
+              category,
+              quantity,
+              type,
+              department,
+              date,
+              notes
+            )
+          ) {
+            alert("操作保存成功！");
+            document.getElementById("quantity").value = "";
+            document.getElementById("notes").value = "";
+            this.renderOperationHistory();
+            this.renderInventory();
+            this.renderDashboard();
+          } else {
+            alert("操作失败！可能是库存不足或数据有误。");
+          }
+        },
+
+        // 撤销操作
+        undoOperation() {
+          if (confirm("确定要撤销上一次操作吗？")) {
+            if (DataManager.undoLastOperation()) {
+              alert("撤销成功！");
+              this.renderOperationHistory();
+              this.renderInventory();
+              this.renderDashboard();
+            } else {
+              alert("撤销失败，没有可撤销的操作！");
+            }
+          }
+        },
+
+        // 搜索历史
+        searchHistory() {
+          const search = document.getElementById("history-search").value.trim();
+          const type = document.getElementById("history-operation-type").value;
+
+          this.renderOperationHistory({
+            category: search,
+            type,
+          });
+        },
+
+        // 重置历史搜索
+        resetHistorySearch() {
+          document.getElementById("history-search").value = "";
+          document.getElementById("history-operation-type").value = "all";
+          this.renderOperationHistory();
+        },
+
+        // 筛选历史
+        filterHistory() {
+          const startDate = document.getElementById("history-start-date").value;
+          const endDate = document.getElementById("history-end-date").value;
+
+          if (!startDate || !endDate) {
+            alert("请选择开始日期和结束日期！");
+            return;
+          }
+
+          this.renderOperationHistory({
+            startDate,
+            endDate,
+          });
+        },
+
+        // 搜索库存
+        searchInventory() {
+          const dept = document.getElementById("inventory-dept").value;
+          const search = document
+            .getElementById("inventory-search")
+            .value.trim();
+          this.renderInventory(dept, search);
+        },
+
+        // 重置库存搜索
+        resetInventorySearch() {
+          document.getElementById("inventory-dept").value = "all";
+          document.getElementById("inventory-search").value = "";
+          this.renderInventory();
+        },
+
+        // 保存库存排序
+        saveInventoryOrder() {
+          alert(
+            "库存排序已保存！（注意：此功能仅影响显示顺序，不影响实际数据）"
+          );
+        },
+
+        // 生成报表
+        generateReport() {
+          const startDate = document.getElementById("report-start-date").value;
+          const endDate = document.getElementById("report-end-date").value;
+          const department = document.getElementById("report-department").value;
+          const category = document.getElementById("report-category").value;
+
+          if (!startDate || !endDate) {
+            alert("请选择开始日期和结束日期！");
+            return;
+          }
+
+          const reportData = DataManager.getReportData(
+            startDate,
+            endDate,
+            department,
+            category
+          );
+          const reportBody = document.getElementById("monthly-report-body");
+          reportBody.innerHTML = "";
+
+          if (reportData.length === 0) {
+            reportBody.innerHTML = `<tr><td colspan="8" style="text-align: center;">该时间段内无数据</td></tr>`;
+          } else {
+            reportData.forEach((item) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                            <td>${item.department}</td>
+                            <td>${item.category}</td>
+                            <td>${item.inQuantity}</td>
+                            <td>${item.inAmount.toFixed(2)}</td>
+                            <td>${item.outQuantity}</td>
+                            <td>${item.outAmount.toFixed(2)}</td>
+                            <td>${item.netQuantity}</td>
+                            <td>${item.netAmount.toFixed(2)}</td>
+                        `;
+              reportBody.appendChild(row);
+            });
+          }
+        },
+
+        // 导出报表Excel
+        exportReportExcel() {
+          alert("导出Excel功能需要后端支持，当前为演示版本。");
+        },
+
+        // 查看每日历史库存
+        viewDailyHistory() {
+          const date = document.getElementById("daily-history-date").value;
+          const department =
+            document.getElementById("daily-history-dept").value;
+
+          if (!date) {
+            alert("请选择日期！");
+            return;
+          }
+
+          const dailyInventory = DataManager.getDailyInventory(
+            date,
+            department
+          );
+          const dailyHistoryBody =
+            document.getElementById("daily-history-body");
+          dailyHistoryBody.innerHTML = "";
+
+          if (!dailyInventory) {
+            dailyHistoryBody.innerHTML = `<tr><td colspan="10" style="text-align: center;">该日期无历史库存数据</td></tr>`;
+            return;
+          }
+
+          let hasData = false;
+
+          if (department === "all") {
+            Object.keys(dailyInventory).forEach((dept) => {
+              Object.keys(dailyInventory[dept]).forEach((category) => {
+                hasData = true;
+                this.renderDailyHistoryRow(
+                  dailyHistoryBody,
+                  dept,
+                  category,
+                  dailyInventory[dept][category]
+                );
+              });
+            });
+          } else {
+            Object.keys(dailyInventory).forEach((category) => {
+              hasData = true;
+              this.renderDailyHistoryRow(
+                dailyHistoryBody,
+                department,
+                category,
+                dailyInventory[category]
+              );
+            });
+          }
+
+          if (!hasData) {
+            dailyHistoryBody.innerHTML = `<tr><td colspan="10" style="text-align: center;">该日期无历史库存数据</td></tr>`;
+          }
+        },
+
+        // 渲染每日历史库存行
+        renderDailyHistoryRow(container, dept, category, inventory) {
+          const config = DataManager.categoryConfig[category];
+          const stock = inventory.stock;
+          const warning = config.warning;
+          const price = config.price;
+          const amount = stock * price;
+
+          let statusClass = "stock-ok";
+          let statusText = "正常";
+
+          if (stock === 0) {
+            statusClass = "stock-warning";
+            statusText = "缺货";
+          } else if (stock <= warning) {
+            statusClass = "stock-warning";
+            statusText = stock <= warning / 2 ? "严重不足" : "不足";
+          }
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                    <td>${dept}</td>
+                    <td>${category}</td>
+                    <td>${config.unit}</td>
+                    <td>${inventory.in}</td>
+                    <td>${inventory.out}</td>
+                    <td>${stock}</td>
+                    <td>${price}</td>
+                    <td>${amount.toFixed(2)}</td>
+                    <td>${warning}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                `;
+
+          container.appendChild(row);
+        },
+
+        // 导出数据
+        exportData() {
+          const data = DataManager.exportData();
+          const blob = new Blob([data], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `库存数据备份_${
+            new Date().toISOString().split("T")[0]
+          }.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          document.getElementById(
+            "backup-status"
+          ).textContent = `数据已导出 (${new Date().toLocaleString()})`;
+        },
+
+        // 导入数据
+        importData() {
+          const fileInput = document.getElementById("data-file");
+          const file = fileInput.files[0];
+
+          if (!file) {
+            alert("请选择备份文件！");
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (DataManager.importData(e.target.result)) {
+              alert("数据导入成功！");
+              this.renderAll();
+              document.getElementById(
+                "backup-status"
+              ).textContent = `数据已导入 (${new Date().toLocaleString()})`;
+            } else {
+              alert("数据导入失败，请检查文件格式！");
+            }
+          };
+          reader.readAsText(file);
+        },
+
+        // 打印报表
+        printReport() {
+          window.print();
+        },
+
+        // 快速导出
+        quickExport() {
+          alert("快速导出功能需要后端支持，当前为演示版本。");
+        },
+
+        // 设置自动备份
+        setAutoBackup(value) {
+          localStorage.setItem("autoBackup", value);
+          document.getElementById(
+            "backup-status"
+          ).textContent = `自动备份已设置为: ${value} (${new Date().toLocaleString()})`;
+        },
+
+        // 初始化拖拽排序
+        initSortable(containerId) {
+          const container = document.getElementById(containerId);
+          let dragItem = null;
+
+          // 为每个可排序项添加事件监听器
+          const items = container.querySelectorAll(".sortable-item");
+          items.forEach((item) => {
+            // 鼠标/触摸事件
+            item.addEventListener("mousedown", startDrag);
+            item.addEventListener("touchstart", startDrag);
+
+            // 防止链接拖拽
+            item.setAttribute("draggable", "false");
+          });
+
+          function startDrag(e) {
+            // 防止默认行为
+            e.preventDefault();
+
+            dragItem = this;
+            dragItem.classList.add("dragging");
+
+            // 添加移动和结束事件监听器
+            document.addEventListener("mousemove", onDrag);
+            document.addEventListener("touchmove", onDrag);
+            document.addEventListener("mouseup", endDrag);
+            document.addEventListener("touchend", endDrag);
+          }
+
+          function onDrag(e) {
+            if (!dragItem) return;
+
+            // 获取鼠标/触摸位置
+            let clientY;
+            if (e.type === "mousemove") {
+              clientY = e.clientY;
+            } else {
+              clientY = e.touches[0].clientY;
+            }
+
+            // 获取容器内所有项目
+            const items = Array.from(
+              container.querySelectorAll(".sortable-item:not(.dragging)")
+            );
+
+            // 找到拖拽项应该插入的位置
+            let nextItem = items.find((item) => {
+              const rect = item.getBoundingClientRect();
+              return clientY < rect.top + rect.height / 2;
+            });
+
+            // 移动拖拽项
+            if (nextItem) {
+              container.insertBefore(dragItem, nextItem);
+            } else {
+              container.appendChild(dragItem);
+            }
+          }
+
+          function endDrag() {
+            if (dragItem) {
+              dragItem.classList.remove("dragging");
+              dragItem = null;
+            }
+
+            // 移除事件监听器
+            document.removeEventListener("mousemove", onDrag);
+            document.removeEventListener("touchmove", onDrag);
+            document.removeEventListener("mouseup", endDrag);
+            document.removeEventListener("touchend", endDrag);
+          }
+        },
+      };
+
+      // 初始化应用
+      document.addEventListener("DOMContentLoaded", () => {
+        DataManager.init();
+        UIManager.init();
+      });
+    </script>
+  </body>
+</html>
